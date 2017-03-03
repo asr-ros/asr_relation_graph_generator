@@ -1,7 +1,7 @@
 <package>
   <name>asr_relation_graph_generator</name>
   <version>1.0.0</version>
-  <description>Relation graph generator package.</description>
+  <description>Generates the tree containing selected relations between scene objects from recorded trajectories. Used in PSM.</description>
   <author>Meißner Pascal</author>
   <maintainer email="asr-ros@lists.kit.edu">Meißner Pascal</maintainer>
   <license>BSD</license>
