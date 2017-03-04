@@ -109,6 +109,11 @@ namespace SceneModel {
      * @param space The number of leading spaces.
      */
     void printTreeToConsole(unsigned int space);
+
+    /**
+     * Assigns unique IDs to all nodes so references can later be expressed through IDs only.
+     */
+    void setIDs();
     
   public:
     
@@ -127,6 +132,10 @@ namespace SceneModel {
      * A list of all child nodes.
      */
     std::vector<boost::shared_ptr<TreeNode> > mChildren;
+
+    bool mIsReference = false;
+    boost::shared_ptr<TreeNode> mReferenceTo;
+    unsigned int mID;
     
   private:
     /**
@@ -135,5 +144,22 @@ namespace SceneModel {
      * @param pParent the new parent node.
      */
     void reassignNewParentNode(boost::shared_ptr<TreeNode> pParent);
+
+    /**
+     * Recursively updates the IDs of the nodes through DFS. Used in setIDs().
+     *
+     * @param pID    If conditions are met, pID+1 is assigned as the node's ID.
+     * @param pUpdateReferenceIDs     Whether to update only the non-reference or only the reference node IDs.
+     */
+    void updateIDs(unsigned int& pID, bool pUpdateReferencIDs);
+
+    /**
+     * Recursively checks all references in the tree. If they point into pRoot, they are flipped to point out of it instead to avoid circles.
+     *
+     * @param pRoot     A root which should only have references pointing out from it.
+     * @return  a list of all flipped references
+     */
+    std::vector<boost::shared_ptr<TreeNode>> updateReferences(boost::shared_ptr<TreeNode> pRoot);
+
   };
 }

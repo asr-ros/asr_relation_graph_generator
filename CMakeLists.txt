@@ -34,6 +34,12 @@ add_library(asr_relation_graph_generator
 		      src/trainer/generator/heuristic/HeuristicalTreeGenerator.cpp src/trainer/generator/heuristic/DirectionRelationHeuristic.cpp src/trainer/generator/heuristic/AbstractHeuristic.cpp
 		      src/trainer/generator/AbstractGraphGenerator.cpp
 		      src/helper/MathHelper.cpp
+		      src/trainer/FullyMeshedTrainer.cpp src/trainer/generator/fully_meshed/FullyMeshedGenerator.cpp
+		      src/trainer/TopologyTreeTrainer.cpp src/trainer/generator/topology_tree/TopologyTreeGenerator.cpp
+		      src/topology_generator/Relation.cpp
+		      
+		      src/topology_generator/ConnectivityChecker.cpp 
+		      src/topology_generator/TopologyGenerator.cpp 
 )
 
 # dependcy to the message generation of asr_msgs to ensure 
@@ -53,6 +59,14 @@ add_executable(Tester src/main.cpp)
 add_dependencies(Tester asr_msgs_generate_messages_cpp)
 
 target_link_libraries(Tester 
+  ${catkin_LIBRARIES}
+  ${Eigen_LIBRARIES}
+  asr_relation_graph_generator
+)
+
+add_executable(AllTopologiesTester src/AllTopologiesTester.cpp)
+add_dependencies(AllTopologiesTester asr_msgs_generate_messages_cpp)
+target_link_libraries(AllTopologiesTester 
   ${catkin_LIBRARIES}
   ${Eigen_LIBRARIES}
   asr_relation_graph_generator
