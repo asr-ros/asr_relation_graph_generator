@@ -1,20 +1,39 @@
+/**
+
+Copyright (c) 2017, Gaßner Nikolai, Meißner Pascal
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+*/
+
 #include "topology_generator/TopologyGenerator.h"
 
 namespace SceneModel {
 
-TopologyGenerator::TopologyGenerator(const std::vector<std::string>& pAllObjectTypes, unsigned int pMaxNeighbourCount):
-    mAllObjectTypes(pAllObjectTypes), mMaxNeighbourCount(pMaxNeighbourCount), mRemoveRelations(true), mSwapRelations(true)
+TopologyGenerator::TopologyGenerator(const std::vector<std::string>& pAllObjectTypes, unsigned int pMaxNeighbourCount, bool pRemoveRelations, bool pSwapRelations):
+    mAllObjectTypes(pAllObjectTypes), mMaxNeighbourCount(pMaxNeighbourCount), mRemoveRelations(pRemoveRelations), mSwapRelations(pSwapRelations)
 {
     mConnectivityChecker = boost::shared_ptr<ConnectivityChecker>(new ConnectivityChecker(pAllObjectTypes.size()));
 }
 
 std::vector<boost::shared_ptr<Topology>> TopologyGenerator::generateNeighbours(boost::shared_ptr<Topology> pFrom)
 {
-    bool useDisconnected = false;
+    std::cout << "-----------------------------------------------------------" << std::endl;
+    std::cout << "Generating neighbours (c indicates connectedness):" << std::endl;
 
     std::vector<bool> bitvector = convertTopologyToBitvector(pFrom);
     std::vector<std::vector<bool>> neighbours = calculateNeighbours(bitvector);
-    std::vector<boost::shared_ptr<Topology>> result;
+    std::vector<std::vector<bool>> selectedNeighbours;
+
     std::cout << std::endl;
     for (std::vector<bool> i: neighbours)
     {
@@ -23,33 +42,43 @@ std::vector<boost::shared_ptr<Topology>> TopologyGenerator::generateNeighbours(b
             if (bit) std::cout << "1";
             else std::cout << "0";
         }
-        if (useDisconnected || mConnectivityChecker->isConnected(i))
+        if (mConnectivityChecker->isConnected(i))
         {
             std::cout << "c";
-            result.push_back(convertBitvectorToTopology(i));
+            selectedNeighbours.push_back(i);
         }
         std::cout << " ";
     }
     std::cout << std::endl;
+
+    if (mMaxNeighbourCount < selectedNeighbours.size())
+    {
+        std::cout << "Found " << selectedNeighbours.size() << " neighbours, maximum is " << mMaxNeighbourCount << ". Selecting random neighbours." << std::endl;
+        selectedNeighbours = selectRandomNeighbours(selectedNeighbours);
+        if (selectedNeighbours.size() != mMaxNeighbourCount)
+            throw std::runtime_error("In TopologyGenerator: number of randomly selected neighbours (" + boost::lexical_cast<std::string>(selectedNeighbours.size()) + ") was not equal to maximum.");
+    }
+    std::vector<boost::shared_ptr<Topology>> result;
+    std::cout << "Selected neighbours: ";
+    for (std::vector<bool> i: selectedNeighbours)
+    {
+        for (bool bit: i)
+        {
+            if (bit) std::cout << "1";
+            else std::cout << "0";
+        }
+        std::cout << " ";
+        result.push_back(convertBitvectorToTopology(i));
+    }
+    std::cout << std::endl;
+    std::cout << "-----------------------------------------------------------" << std::endl;
+
     return result;
 }
 
 std::vector<boost::shared_ptr<Topology>> TopologyGenerator::generateStarTopologies()
 {
     std::vector<boost::shared_ptr<Topology>> result;
-    /*for (std::string typeA: mAllObjectTypes)
-    {
-        std::vector<boost::shared_ptr<Relation>> relations;
-        for (std::string typeB: mAllObjectTypes)
-            if (typeA != typeB)
-            {
-                boost::shared_ptr<Relation> newRelation(new Relation(typeA, typeB)); // Generate all relations connecting the object of this type to all the others
-                relations.push_back(newRelation);
-            }
-        boost::shared_ptr<Topology> newTopology(new Topology());
-        newTopology->mRelations = relations;    // TODO: evaluation
-        result.push_back(newTopology);
-    }*/
     // from lib_ism:
     std::vector<std::vector<bool>> starBitVectors;
     unsigned int numObjects = mAllObjectTypes.size();
@@ -78,15 +107,6 @@ std::vector<boost::shared_ptr<Topology>> TopologyGenerator::generateStarTopologi
 boost::shared_ptr<Topology> TopologyGenerator::generateFullyMeshedTopology()
 {
     unsigned int numObjects = mAllObjectTypes.size();
-    /*for (std::string typeA: mAllObjectTypes)
-        for (std::string typeB: mAllObjectTypes)
-            if (typeA != typeB)
-                {
-                    boost::shared_ptr<Relation> newRelation(new Relation(typeA, typeB));
-                    relations.push_back(newRelation);
-                }
-    boost::shared_ptr<Topology> result(new Topology());
-    result->mRelations = relations;    // TODO: evaluation*/
     std::vector<bool> bitvector((numObjects - 1) * numObjects / 2, true);   // contains all possible relations.
     boost::shared_ptr<Topology> result = convertBitvectorToTopology(bitvector);
     return result;
@@ -153,11 +173,9 @@ std::vector<boost::shared_ptr<Topology>> TopologyGenerator::generateAllConnected
     return result;
 }
 
-
-// currently unused
 std::vector<std::vector<bool>> TopologyGenerator::selectRandomNeighbours(std::vector<std::vector<bool>>& pNeighbours)
 {
-    if (pNeighbours.size() >= mMaxNeighbourCount) return pNeighbours;   // if amount of neighbours is already smaller than maximum amount: return neighbours
+    if (pNeighbours.size() <= mMaxNeighbourCount) return pNeighbours;   // if amount of neighbours is already smaller than maximum amount: return neighbours
     //from lib_ism: Sort from by #relations.
     struct compare {
         bool operator() (const std::vector<bool> & first, const std::vector<bool> & second) {
@@ -195,20 +213,15 @@ boost::shared_ptr<Topology> TopologyGenerator::convertBitvectorToTopology(const 
     unsigned int bitvectorindex = 0;
     for (unsigned int i = 0; i < numObjectTypes - 1; i++)
     {
-        //std::cout << "i = " << i << ": ";
         std::string typeA = mAllObjectTypes[i];
-        //std::cout << "typeA = " << typeA << ". " << std::endl;
         for (unsigned int j = i + 1; j < numObjectTypes; j++)
         {
-            //std::cout << "j = " << j << ": ";
             std::string typeB = mAllObjectTypes[j];
-            //std::cout << "typeB = " << typeB << ". ";
             if (pBitvector[bitvectorindex])
             {
                 boost::shared_ptr<Relation> newRelation(new Relation(typeA, typeB));
                 relations.push_back(newRelation);
             }
-            //std::cout << "bitvectorindex = " << bitvectorindex << "." << std::endl;
             bitvectorindex++;
         }
     }
@@ -227,7 +240,6 @@ boost::shared_ptr<Topology> TopologyGenerator::convertBitvectorToTopology(const 
 
 std::vector<bool> TopologyGenerator::convertTopologyToBitvector(boost::shared_ptr<Topology> pTopology)
 {
-    //std::cout << std::endl;
     unsigned int numObjectTypes = mAllObjectTypes.size();
     unsigned int numAllRelations = (numObjectTypes - 1) * numObjectTypes / 2;
     std::vector<bool> result = std::vector<bool>(numAllRelations, false);
@@ -244,35 +256,9 @@ std::vector<bool> TopologyGenerator::convertTopologyToBitvector(boost::shared_pt
         unsigned int indexB = indicesByTypes[typeB];
         unsigned int indexMin = std::min(indexA, indexB);
         unsigned int indexMax = std::max(indexA, indexB);
-        unsigned int bitvectorindex = 0;
-        //unsigned int relevantbitvectorindex = 0;
-        /*for (unsigned int i = 0; i < numObjectTypes - 1; i++)
-            for (unsigned int j = i + 1; j < numObjectTypes; j++)
-            {
-                if (indexMin == i && indexMax == j)
-                {
-                    result[bitvectorindex] = true;
-                    relevantbitvectorindex = bitvectorindex;
-                    std::cout << "current bitvector: ";
-                    for (bool bit: result)
-                    {
-                        if (bit) std::cout << "1";
-                        else std::cout << "0";
-                    }
-                    std::cout << std::endl;
-                    break;
-                }
-                bitvectorindex++;
-            }*/
-        unsigned int testbitvectorindex = indexMin * numObjectTypes - indexMin * (indexMin + 1) / 2 + (indexMax - indexMin) - 1;
-        /*std::cout << "indexMin * numObjectTypes - indexMin * (indexMin + 1) / 2 + (indexMax - indexMin) - 1 = " << indexMin << " * " << numObjectTypes << " - " <<
-                     indexMin << " * (" << indexMin  << " + 1) / 2 + (" << indexMax << " - " << indexMin << ") - 1 = " <<
-                     indexMin * numObjectTypes - indexMin * (indexMin + 1) / 2 + (indexMax - indexMin) - 1 << std::endl;
-        //std::cout << "bitvectorindex = " << relevantbitvectorindex << ". testbitvectorindex = " << testbitvectorindex << std::endl;*/
-        bitvectorindex = testbitvectorindex;
+        unsigned int bitvectorindex = indexMin * numObjectTypes - indexMin * (indexMin + 1) / 2 + (indexMax - indexMin) - 1;
         result[bitvectorindex] = true;
     }
-    //std::cout << "---" << std::endl;
     return result;
 }
 

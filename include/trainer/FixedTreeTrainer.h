@@ -15,34 +15,47 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 */
 
-#include "topology_generator/Relation.h"
+#pragma once
+
+// Package includes
+#include <boost/shared_ptr.hpp>
+
+// Local includes
+#include "trainer/TreeNode.h"
+#include "trainer/AbstractTrainer.h"
+
+//#include "trainer/source/AbstractSource.h"
+//#include "trainer/generator/AbstractGraphGenerator.h"
 
 namespace SceneModel {
 
-Relation::Relation(std::string pObjectTypeA, std::string pObjectTypeB):
-    mObjectTypeA(pObjectTypeA), mObjectTypeB(pObjectTypeB)
+/**
+ * Returns a tree set in construction.
+ * Used to suit an older interface.
+ */
+class FixedTreeTrainer: public AbstractTrainer
 {
-}
+public:
 
-std::string Relation::getObjectTypeA() const
-{
-    return mObjectTypeA;
-}
-std::string Relation::getObjectTypeB() const
-{
-    return mObjectTypeB;
-}
 
-bool Relation::containsObject(const std::string& pType) const
-{
-    return (mObjectTypeA == pType || mObjectTypeB == pType);
-}
+  /**
+   * Constructor.
+   * @param pTree   The fixed tree to be returned by the trainer
+   */
+  FixedTreeTrainer(boost::shared_ptr<TreeNode> pTree)
+  {
+      root = pTree;
+      source.reset(new AbstractSource());
+      generator.reset(new AbstractGraphGenerator());
+  }
 
-std::string Relation::getOtherType(const std::string& pFirstType) const
-{
-    if (pFirstType == mObjectTypeA) return mObjectTypeB;
-    else if (pFirstType == mObjectTypeB) return mObjectTypeA;
-    else return "";
-}
+  /**
+   * Destructor.
+   */
+  ~FixedTreeTrainer() { };
+
+
+
+};
 
 }

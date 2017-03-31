@@ -1,6 +1,6 @@
 /**
 
-Copyright (c) 2016, Meißner Pascal
+Copyright (c) 2016, Gaßner Nikolai, Meißner Pascal
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -77,7 +77,7 @@ namespace SceneModel {
       newRoot->mParent = boost::shared_ptr<TreeNode>();
     }
 
-    std::vector<boost::shared_ptr<TreeNode>> reversedReferences = updateReferences(newRoot);//(newRoot->mID);
+    std::vector<boost::shared_ptr<TreeNode>> reversedReferences = newRoot->updateReferences(newRoot);
     for (boost::shared_ptr<TreeNode> reversedReference: reversedReferences) newRoot->addChild(reversedReference);
 
     // Assign unique IDs to each node, counted in order of depth-first search.
