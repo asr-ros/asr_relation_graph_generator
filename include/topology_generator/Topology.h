@@ -61,8 +61,7 @@ public:
     /**
      * The number of false positives encountered during evaluation
      */
-    double mFalsePositives;
-    //unsigned int mFalsePositives;
+    unsigned int mFalsePositives;
 
     /**
      * The average recognition runtime of test sets during evaluation.
@@ -71,9 +70,8 @@ public:
 
     /**
      * The number of false negatives encountered during evaluation.
-     * Since in this model false negatives should be impossible, it is set to 0.
      */
-    unsigned int mFalseNegatives = 0;
+    unsigned int mFalseNegatives;
 
     /**
      * Whether the cost calculated for the tree generated from the relations of this topology is valid.

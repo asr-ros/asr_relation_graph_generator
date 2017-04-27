@@ -154,6 +154,10 @@ namespace SceneModel {
 	break;
       }
     }
+
+    // to avoid circles:
+    std::vector<boost::shared_ptr<TreeNode>> reversedReferences = updateReferences(f());
+    for (boost::shared_ptr<TreeNode> reversedReference: reversedReferences) addChild(reversedReference);
   }
 
   void TreeNode::setIDs()

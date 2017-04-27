@@ -63,11 +63,3 @@ target_link_libraries(Tester
   ${Eigen_LIBRARIES}
   asr_relation_graph_generator
 )
-
-add_executable(AllTopologiesTester src/AllTopologiesTester.cpp)
-add_dependencies(AllTopologiesTester asr_msgs_generate_messages_cpp)
-target_link_libraries(AllTopologiesTester 
-  ${catkin_LIBRARIES}
-  ${Eigen_LIBRARIES}
-  asr_relation_graph_generator
-)
