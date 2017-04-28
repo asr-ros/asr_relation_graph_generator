@@ -19,7 +19,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 // Global includes
 #include <vector>
-
+#include <ros/ros.h>
 // Package includes
 #include <boost/shared_ptr.hpp>
 
@@ -28,6 +28,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 // Local includes
 #include "trainer/source/ObjectSetList.h"
 #include "trainer/source/AbstractSource.h"
+
+
+#include "../../lib_ism/libism/ISM/common_type/ObjectSet.hpp"
+
 
 namespace SceneModel {
   
@@ -55,7 +59,7 @@ namespace SceneModel {
      * 
      * @param pMessage The message to add to the source.
      */
-    void addSceneGraphMessage(asr_msgs::AsrSceneGraph pMessage);
+    void addSceneGraphMessage(std::vector<ISM::ObjectSetPtr> pMessage);
     
   };
 }

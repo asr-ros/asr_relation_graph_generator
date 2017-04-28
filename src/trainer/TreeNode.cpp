@@ -19,7 +19,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 namespace SceneModel {
  
-  TreeNode::TreeNode(boost::shared_ptr<ObjectSet> pObjectSet)
+  TreeNode::TreeNode(boost::shared_ptr<ISM::ObjectSet> pObjectSet)
   : mObjectSet(pObjectSet)
   {
   }
@@ -44,14 +44,15 @@ namespace SceneModel {
     // Search the new root node.
     std::queue<boost::shared_ptr<TreeNode> > nodesToVisit;
     nodesToVisit.push(f());
-    
+
     while(nodesToVisit.size() > 0)
     {
+
       boost::shared_ptr<TreeNode> node = nodesToVisit.front();
       nodesToVisit.pop();
       
       // New root node found?
-      if(node->mObjectSet->mObjects[0]->mType.compare(pType) == 0)
+      if(node->mObjectSet->objects[0]->type.compare(pType) == 0)
       {
 	newRoot = node;
 	break;
@@ -77,7 +78,7 @@ namespace SceneModel {
     return newRoot;
   }
   
-  boost::shared_ptr<ObjectSet> TreeNode::getObjectSet()
+  boost::shared_ptr<ISM::ObjectSet> TreeNode::getObjectSet()
   {
     return mObjectSet;
   }
@@ -116,7 +117,7 @@ namespace SceneModel {
     std::cout << "-";
     
     // Print types and number of children and observations.
-    std::cout << mObjectSet->mObjects[0]->mType << "(" << mChildren.size() << "/" << mObjectSet->mObjects.size() << ")" << std::endl;
+    std::cout << mObjectSet->objects[pSpace]->type << "(" << mChildren.size() << "/" << mObjectSet->objects.size() << ")" << std::endl;
     
     // Print children.
     BOOST_FOREACH(boost::shared_ptr<SceneModel::TreeNode> node, mChildren)
@@ -128,7 +129,7 @@ namespace SceneModel {
   
   void TreeNode::reassignNewParentNode(boost::shared_ptr<TreeNode> pParent)
   {
-    std::cout << mObjectSet->mObjects[0]->mType << std::endl;
+    std::cout << mObjectSet->objects[0]->type << std::endl;
     
     if(mParent)
       mParent->reassignNewParentNode(f());

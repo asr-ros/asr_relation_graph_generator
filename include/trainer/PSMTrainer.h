@@ -31,6 +31,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 #include "trainer/generator/AbstractGraphGenerator.h"
 #include "trainer/generator/heuristic/HeuristicalTreeGenerator.h"
+#include "../../../lib_ism/libism/ISM/common_type/ObjectSet.hpp"
 
 namespace SceneModel {
 
@@ -63,7 +64,7 @@ namespace SceneModel {
      * 
      * @param pMessage The messages to add to the source.
      */
-    void addSceneGraphMessages(std::vector<boost::shared_ptr<const asr_msgs::AsrSceneGraph> > pMessages);
+    void addSceneGraphMessages(std::vector<ISM::ObjectSetPtr> pMessages);
     
   private:
     

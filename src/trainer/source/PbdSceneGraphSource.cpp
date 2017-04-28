@@ -26,40 +26,34 @@ namespace SceneModel {
   PbdSceneGraphSource::~PbdSceneGraphSource()
   {
   }
-  
-  void PbdSceneGraphSource::addSceneGraphMessage(asr_msgs::AsrSceneGraph pMessage)
+
+  void PbdSceneGraphSource::addSceneGraphMessage(std::vector<ISM::ObjectSetPtr> pMessage)
   {
-    // TODO The merging mechanism of two trajectories with the same name does require testing.
-    
-    // Iterator pointing to one of the AsrNodes in AsrSceneGraph.
-    std::vector<asr_msgs::AsrNode>::const_iterator sceneElementsIterator;
-    
-    // Iterator pointing to one of the messages containing vision features for the AsrNode currently taken into account.
-    std::vector<asr_msgs::AsrObservations>::const_iterator observationIterator;
-    
-    // Iterate over all AsrNode messages (= all object trajectories in the scene)
-    for(sceneElementsIterator = pMessage.scene_elements.begin(); sceneElementsIterator != pMessage.scene_elements.end(); sceneElementsIterator++)
-    {
-      // The set of objects wrapped by the AsrSceneGraph (in form of AsrNodes)
-      boost::shared_ptr<ObjectSet> set = mObjectSetList.getSetIfExists(pMessage.identifier);
-      
-      // If it doesn't exist, create it and add it to the list of sets.
-      if(!set)
-      {
-	set.reset(new ObjectSet(pMessage.identifier));
-	mObjectSetList.mObjectSets.push_back(set);
+
+   // ROS_INFO_STREAM("capacity " << pMessage.capacity());
+    for  (ISM::ObjectSetPtr &objectSet : pMessage) // access by reference to avoid copying
+          {
+        for(ISM::ObjectPtr &ismObject : (new ISM::ObjectSet(*objectSet))->objects){
+            boost::shared_ptr<ISM::ObjectSet> set = mObjectSetList.getSetIfExists((new ISM::Object(*ismObject))->type);
+
+                if(!set){
+
+                    ISM::ObjectSet *helper = new ISM::ObjectSet();
+
+                    helper->mIdentifier = (new ISM::Object(*ismObject))->type;
+
+                    set.reset(helper);
+                    mObjectSetList.mObjectSets.push_back(set);
+
+                  }
+
+
+            // Add a new observed object to the object set.
+            set->objects.push_back(ismObject);
+        }
+
       }
-      
-      // Go through the whole trajectory of vision measurements for the current object (= all object observations part of the current object trajectory).
-      for(observationIterator = sceneElementsIterator->track.begin(); observationIterator != sceneElementsIterator->track.end(); observationIterator++)
-      {
-	// Convert iterator into an object.
-	boost::shared_ptr<Object> object(new Object(*observationIterator));
-	
-	// Add a new observed object to the object set.
-	set->mObjects.push_back(object);
-      }
-    }
+
+
   }
-  
 }

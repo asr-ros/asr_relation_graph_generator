@@ -27,19 +27,19 @@ namespace SceneModel {
   {
   }
   
-  boost::shared_ptr<ObjectSet> ObjectSetList::getSetIfExists(std::string identifier)
+  boost::shared_ptr<ISM::ObjectSet> ObjectSetList::getSetIfExists(std::string identifier)
   {
-    boost::shared_ptr<ObjectSet> result;
-    
+    boost::shared_ptr<ISM::ObjectSet> result;
+
     // Look over all objects and find out if there's one with the given name.
-    BOOST_FOREACH(boost::shared_ptr<ObjectSet> set, mObjectSets)
+    BOOST_FOREACH(boost::shared_ptr<ISM::ObjectSet> set, mObjectSets)
     {
       // Same identifier?
-      if(set->mIdentifier.compare(identifier))
+      if((set->mIdentifier.compare(identifier)) == 0)
       {
 	result = set;
-	break;
-      }	 
+    break;
+      }
     }
     return result;
   }

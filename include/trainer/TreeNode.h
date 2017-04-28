@@ -28,7 +28,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 // Local includes
 #include "trainer/source/ObjectSet.h"
-
+#include "../../../lib_ism/libism/ISM/common_type/ObjectSet.hpp"
 namespace SceneModel {
   
   /**
@@ -45,7 +45,7 @@ namespace SceneModel {
      * 
      * @param pObjectSet An object set containing all observations of a single object over time.
      */
-    TreeNode(boost::shared_ptr<ObjectSet> pObjectSet);
+    TreeNode(boost::shared_ptr<ISM::ObjectSet> pObjectSet);
     
     /**
      * Copy Constructor.
@@ -72,7 +72,7 @@ namespace SceneModel {
      * 
      * @return The object set holding the observations of the object associated with the tree.
      */
-    boost::shared_ptr<ObjectSet> getObjectSet();
+    boost::shared_ptr<ISM::ObjectSet> getObjectSet();
     
     /**
      * Returns the children of this node.
@@ -115,7 +115,7 @@ namespace SceneModel {
     /**
      * An object trajectory containing all observations of a single object over time.
      */
-    boost::shared_ptr<ObjectSet> mObjectSet;
+    boost::shared_ptr<ISM::ObjectSet> mObjectSet;
     
     /**
      * A reference to the parent node.
