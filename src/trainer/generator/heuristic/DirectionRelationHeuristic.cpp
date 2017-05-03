@@ -76,10 +76,10 @@ namespace SceneModel {
 	double averageDistance = 0;
 
 	// Go over all objects in the first object set.
-	for(unsigned int i = 0; i < first->mObjectSet->mObjects.size(); i++)
+    for(unsigned int i = 0; i < first->mObjectSet->objects.size(); i++)
 	{
-	  boost::shared_ptr<Object> firstObject = first->mObjectSet->mObjects[i];
-	  boost::shared_ptr<Object> secondObject = second->mObjectSet->mObjects[i];
+      boost::shared_ptr<ISM::Object> firstObject = first->mObjectSet->objects[i];
+      boost::shared_ptr<ISM::Object> secondObject = second->mObjectSet->objects[i];
 	  
 	  // Both objects not empty?
 	  if (!firstObject || !secondObject)
@@ -88,14 +88,14 @@ namespace SceneModel {
 	  }
 	  
 	  // Calculate average distance.
-	  averageDistance += MathHelper::getDistanceBetweenPoints(*firstObject->mPosition, *secondObject->mPosition);
+      averageDistance += MathHelper::getDistanceBetweenPoints(firstObject->pose->point->eigen, secondObject->pose->point->eigen);
 	  
 	  // +1 for common position couter.
 	  commonPositions++;
 	}
 	
 	// Not enough common positions over all frames? Kick kombination!
-	if(commonPositions < (double) first->mObjectSet->mObjects.size() * mTogetherRatio)
+    if(commonPositions < (double) first->mObjectSet->objects.size() * mTogetherRatio)
 	{
 	  continue;
 	}
@@ -108,10 +108,10 @@ namespace SceneModel {
 	Eigen::Vector3d directionVector;
 
 	// Go over all objects in the first object set again
-	for(unsigned int i = 0; i < first->mObjectSet->mObjects.size(); i++)
+    for(unsigned int i = 0; i < first->mObjectSet->objects.size(); i++)
 	{
-	  boost::shared_ptr<Object> firstObject = first->mObjectSet->mObjects[i];
-	  boost::shared_ptr<Object> secondObject = second->mObjectSet->mObjects[i];
+      boost::shared_ptr<ISM::Object> firstObject = first->mObjectSet->objects[i];
+      boost::shared_ptr<ISM::Object> secondObject = second->mObjectSet->objects[i];
 	  
 	  // Both objects not empty?
 	  if (!firstObject || !secondObject)
@@ -209,24 +209,24 @@ namespace SceneModel {
       double averageDistance = 0;
       
       // Go over all objects in the first object set.
-      for(unsigned int i = 0; i < first->mObjectSet->mObjects.size(); i++)
+      for(unsigned int i = 0; i < first->mObjectSet->objects.size(); i++)
       {
-	boost::shared_ptr<Object> firstObject = first->mObjectSet->mObjects[i];
-	boost::shared_ptr<Object> secondObject = pChild->mObjectSet->mObjects[i];
+    boost::shared_ptr<ISM::Object> firstObject = first->mObjectSet->objects[i];
+    boost::shared_ptr<ISM::Object> secondObject = pChild->mObjectSet->objects[i];
 	
 	// Both objects not empty?
 	if (!firstObject || !secondObject)
 	  continue;
 	
 	// Calculate average distance.
-	averageDistance += MathHelper::getDistanceBetweenPoints(*firstObject->mPosition, *secondObject->mPosition);
+    averageDistance += MathHelper::getDistanceBetweenPoints(firstObject->pose->point->eigen, secondObject->pose->point->eigen);
 	
 	// +1 for common position couter.
 	commonPositions++;
       }
       
       // Not enough common positions over all frames? Kick kombination!
-      if(commonPositions < (double) first->mObjectSet->mObjects.size() * mTogetherRatio)
+      if(commonPositions < (double) first->mObjectSet->objects.size() * mTogetherRatio)
 	continue;
       
       // Calculate the average distance.
@@ -237,10 +237,10 @@ namespace SceneModel {
       Eigen::Vector3d directionVector;
 
       // Go over all objects in the first object set again
-      for(unsigned int i = 0; i < first->mObjectSet->mObjects.size(); i++)
+      for(unsigned int i = 0; i < first->mObjectSet->objects.size(); i++)
       {
-	boost::shared_ptr<Object> firstObject = first->mObjectSet->mObjects[i];
-	boost::shared_ptr<Object> secondObject = pChild->mObjectSet->mObjects[i];
+    boost::shared_ptr<ISM::Object> firstObject = first->mObjectSet->objects[i];
+    boost::shared_ptr<ISM::Object> secondObject = pChild->mObjectSet->objects[i];
 	
 	// Both objects not empty?
 	if (!firstObject || !secondObject)
@@ -314,6 +314,8 @@ namespace SceneModel {
     
     BOOST_FOREACH(boost::shared_ptr<TreeNode> candidate, candidates)
     {
+
+
       // Counter for the view ratio.
       int views = 0;
       
@@ -321,24 +323,24 @@ namespace SceneModel {
       double movement = 0;
       
       // The last object.
-      boost::shared_ptr<Object> lastObject;
+      boost::shared_ptr<ISM::Object> lastObject;
       
       // Iterate over all object in the track and determine the number of views and the sum of movements.
-      BOOST_FOREACH(boost::shared_ptr<Object> object, candidate->mObjectSet->mObjects)
+      BOOST_FOREACH(boost::shared_ptr<ISM::Object> object, candidate->mObjectSet->objects)
       {
 	if(object)
 	{
 	  views++;
 	  
 	  if (lastObject) {
-	    movement += MathHelper::getDistanceBetweenPoints(*object->mPosition, *lastObject->mPosition);
+        movement += MathHelper::getDistanceBetweenPoints(object->pose->point->eigen, lastObject->pose->point->eigen);
 	  }
 	  lastObject = object;
 	}
       }
       
       // Calculate the numbers specified above.
-      double ratio = (double) views / (double) candidate->mObjectSet->mObjects.size();
+      double ratio = (double) views / (double) candidate->mObjectSet->objects.size();
       if (ratio > bestViewRatio || (ratio == bestViewRatio && movement < bestMovement)) {
 	bestViewRatio = ratio;
 	bestMovement = movement;
@@ -360,14 +362,14 @@ namespace SceneModel {
     return (!candidates.empty()) ? candidates[0] : boost::shared_ptr<TreeNode>();
   }
   
-  Eigen::Vector3d DirectionRelationHeuristic::getDirectionVector(const boost::shared_ptr<Object> first,
-								   const boost::shared_ptr<Object> second)
+  Eigen::Vector3d DirectionRelationHeuristic::getDirectionVector(const boost::shared_ptr<ISM::Object> first,
+                                   const boost::shared_ptr<ISM::Object> second)
   {
     // Calculate the spatial difference between both positions.
-    Eigen::Vector3d firstToSecond = *second->mPosition - *first->mPosition;
+    Eigen::Vector3d firstToSecond = second->pose->point->eigen - first->pose->point->eigen;
     
     // Get orientation of first object.
-    Eigen::Quaternion<double> firstRotation = *first->mOrientation;
+    Eigen::Quaternion<double> firstRotation = first->pose->quat->eigen;
     
     // ???
     return firstRotation.inverse()._transformVector(firstToSecond).normalized();

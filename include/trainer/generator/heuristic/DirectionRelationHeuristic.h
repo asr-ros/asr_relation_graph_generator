@@ -34,6 +34,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 #include "trainer/generator/heuristic/AbstractHeuristic.h"
 
+#include "../../../../../lib_ism/libism/ISM/common_type/Object.hpp"
+#include "../../../../../lib_ism/libism/ISM/common_type/ObjectSet.hpp"
+
+
 namespace SceneModel {
   
   /**
@@ -97,8 +101,8 @@ namespace SceneModel {
      * @param first The first object.
      * @param second The second object.
      */
-    Eigen::Vector3d getDirectionVector(const boost::shared_ptr<Object> first,
-					const boost::shared_ptr<Object> second);
+    Eigen::Vector3d getDirectionVector(const boost::shared_ptr<ISM::Object> first,
+                    const boost::shared_ptr<ISM::Object> second);
 
     /**
      * Maximal percentage of breaks in object relation.

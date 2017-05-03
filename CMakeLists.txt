@@ -10,6 +10,7 @@ find_package(Eigen REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   asr_msgs
+  asr_lib_ism
 )
 
 catkin_package(

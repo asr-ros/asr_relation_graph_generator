@@ -37,9 +37,9 @@ namespace SceneModel {
     // which means we expand clusters until we have a tree of them. We're building bottom up,
     // thats because we have to store the tree as a list of clusters during building.
     std::vector<boost::shared_ptr<TreeNode> > clusters;
-    
+
     // Initialize the helper data structure.
-    BOOST_FOREACH(boost::shared_ptr<ObjectSet> set, pObjectSets.mObjectSets)
+    BOOST_FOREACH(boost::shared_ptr<ISM::ObjectSet> set, pObjectSets.mObjectSets)
       clusters.push_back(boost::shared_ptr<TreeNode>(new TreeNode(set)));
     
     // Use the heuristics and agglomerative clustering to create the tree.
@@ -57,7 +57,7 @@ namespace SceneModel {
       // Remove the object set used by the cluster's root from our 'clusters' helper data structure.
       for(unsigned int i = 0; i < clusters.size(); i++)
       {
-	if(clusters[i]->mObjectSet == cluster->mObjectSet)
+    if(clusters[i]->mObjectSet->mIdentifier == cluster->mObjectSet->mIdentifier)
 	{
 	  clusters.erase(clusters.begin() + i);
 	  i--;
@@ -69,7 +69,7 @@ namespace SceneModel {
       {
 	for(unsigned int i = 0; i < clusters.size(); i++)
 	{
-	  if(clusters[i]->mObjectSet == child->mObjectSet)
+      if(clusters[i]->mObjectSet->mIdentifier == child->mObjectSet->mIdentifier)
 	  {
 	    clusters.erase(clusters.begin() + i);
 	    i--;
@@ -95,16 +95,16 @@ namespace SceneModel {
     std::vector<boost::shared_ptr<TreeNode> > clusters;
     
     // Initialize the helper data structure.
-    BOOST_FOREACH(boost::shared_ptr<ObjectSet> set, pTrajectories.mObjectSets)
+    BOOST_FOREACH(boost::shared_ptr<ISM::ObjectSet> set, pTrajectories.mObjectSets)
       clusters.push_back(boost::shared_ptr<TreeNode>(new TreeNode(set)));
       
     // Add the object with the given type as root node.
     for(std::vector<boost::shared_ptr<TreeNode> >::iterator it = clusters.begin() ; it != clusters.end(); ++it)
     {
-      boost::shared_ptr<ObjectSet> objectSet = (*it)->mObjectSet;
+      boost::shared_ptr<ISM::ObjectSet> objectSet = (*it)->mObjectSet;
       
       // Check, if we found our object set.
-      if(objectSet->mObjects[0]->mType.compare(pType) == 0)
+      if(objectSet->objects[0]->type.compare(pType) == 0)
       {
 	// Initialize the root node with the found object set.
 	pRoot.reset(new TreeNode(objectSet));
@@ -220,7 +220,7 @@ namespace SceneModel {
     // Iterate over the list of trajectories and delete empty object sets.
     for(unsigned int i = 0; i < pObjectSets.mObjectSets.size(); i++)
     {
-      if (pObjectSets.mObjectSets[i]->mObjects.size() == 0)
+      if (pObjectSets.mObjectSets[i]->objects.size() == 0 )
       {
 	  pObjectSets.mObjectSets.erase(pObjectSets.mObjectSets.begin() + i);
 	  i--;

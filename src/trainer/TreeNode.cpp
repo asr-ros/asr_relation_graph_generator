@@ -19,7 +19,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 namespace SceneModel {
  
-  TreeNode::TreeNode(boost::shared_ptr<ObjectSet> pObjectSet)
+  TreeNode::TreeNode(boost::shared_ptr<ISM::ObjectSet> pObjectSet)
   : mObjectSet(pObjectSet)
   {
   }
@@ -38,13 +38,13 @@ namespace SceneModel {
   }
   
   boost::shared_ptr<TreeNode> TreeNode::setNewRootNodeByType(std::string pType)
-  {      
+  {
     boost::shared_ptr<SceneModel::TreeNode> newRoot;
     
     // Search the new root node.
     std::queue<boost::shared_ptr<TreeNode> > nodesToVisit;
     nodesToVisit.push(f());
-    
+
     while(nodesToVisit.size() > 0)
     {
         boost::shared_ptr<TreeNode> node = nodesToVisit.front();
@@ -87,7 +87,7 @@ namespace SceneModel {
     return newRoot;
   }
   
-  boost::shared_ptr<ObjectSet> TreeNode::getObjectSet()
+  boost::shared_ptr<ISM::ObjectSet> TreeNode::getObjectSet()
   {
     return mObjectSet;
   }
@@ -138,6 +138,8 @@ namespace SceneModel {
   
   void TreeNode::reassignNewParentNode(boost::shared_ptr<TreeNode> pParent)
   {
+    std::cout << mObjectSet->objects[0]->type << std::endl;
+    
     if(mParent)
       mParent->reassignNewParentNode(f());
     

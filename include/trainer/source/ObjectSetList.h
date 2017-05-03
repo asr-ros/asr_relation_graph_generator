@@ -27,6 +27,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 // Local includes
 #include "trainer/source/ObjectSet.h"
 
+
+#include "../../../../lib_ism/libism/ISM/common_type/ObjectSet.hpp"
+
 namespace SceneModel {
   
   /**
@@ -54,13 +57,13 @@ namespace SceneModel {
      * @param identifier Name if the set identifier.
      * @return Set with the given identifier or null pointer, if there's no such set.
      */
-    boost::shared_ptr<ObjectSet> getSetIfExists(std::string identifier);
+    boost::shared_ptr<ISM::ObjectSet> getSetIfExists(std::string identifier);
     
   public:
     
     /**
      * A list of objects represented by the trajectory.
      */
-    std::vector<boost::shared_ptr<ObjectSet> > mObjectSets;
+    std::vector<boost::shared_ptr<ISM::ObjectSet> > mObjectSets;
   };
 }

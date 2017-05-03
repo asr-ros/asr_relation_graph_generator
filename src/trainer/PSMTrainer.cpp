@@ -38,10 +38,11 @@ namespace SceneModel {
   {
   }
 
-  void PSMTrainer::addSceneGraphMessages(std::vector<boost::shared_ptr<const asr_msgs::AsrSceneGraph> > pMessages)
+
+  void PSMTrainer::addSceneGraphMessages(std::vector<ISM::ObjectSetPtr> pMessages)
   {
-    BOOST_FOREACH(boost::shared_ptr<const asr_msgs::AsrSceneGraph> pMessage, pMessages)
-      pbdSource->addSceneGraphMessage(*pMessage);
+    //BOOST_FOREACH(boost::shared_ptr<const ISM::ObjectSetPtr> pMessage, pMessages)
+      pbdSource->addSceneGraphMessage(pMessages);
   }
   
 }
