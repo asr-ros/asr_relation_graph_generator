@@ -34,8 +34,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 #include "trainer/generator/heuristic/AbstractHeuristic.h"
 
-#include "../../../../../lib_ism/libism/ISM/common_type/Object.hpp"
-#include "../../../../../lib_ism/libism/ISM/common_type/ObjectSet.hpp"
+#include <ISM/common_type/Object.hpp>
+#include <ISM/common_type/ObjectSet.hpp>
 
 
 namespace SceneModel {
