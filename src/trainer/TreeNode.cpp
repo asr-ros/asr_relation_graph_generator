@@ -54,7 +54,7 @@ namespace SceneModel {
         {
 
             // New root node found?
-            if(node->mObjectSet->mObjects[0]->mType.compare(pType) == 0)
+            if(node->mObjectSet->objects[0]->type.compare(pType) == 0)
             {
                 newRoot = node;
                 break;
@@ -128,7 +128,7 @@ namespace SceneModel {
     // Print types and number of children and observations, as well as ID and ID of referenced (own if not reference): ID mID -> referencedID
     unsigned int referencing = mID;
     if (mIsReference) referencing = mReferenceTo->mID;
-    std::cout << mObjectSet->mObjects[0]->mType << "(" << mChildren.size() << "/" << mObjectSet->mObjects.size() << ")" << " ID " << mID << " -> " << referencing << std::endl;
+    std::cout << mObjectSet->objects[0]->type << "(" << mChildren.size() << "/" << mObjectSet->objects.size() << ")" << " ID " << mID << " -> " << referencing << std::endl;
     
     // Print children.
     if (!mIsReference)  // References have no children

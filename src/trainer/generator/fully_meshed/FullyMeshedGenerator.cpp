@@ -31,17 +31,17 @@ FullyMeshedGenerator::~FullyMeshedGenerator()
 
 void FullyMeshedGenerator::buildTree(ObjectSetList pObjectSets, boost::shared_ptr<TreeNode>& pRoot)
 {
-    buildTree(pObjectSets, pRoot, pObjectSets.mObjectSets.at(0)->mObjects.at(0)->mType);
+    buildTree(pObjectSets, pRoot, pObjectSets.mObjectSets.at(0)->objects.at(0)->type);
 }
 
 void FullyMeshedGenerator::buildTree(ObjectSetList pTrajectories, boost::shared_ptr<TreeNode>& pRoot, std::string pType)
 {
     std::vector<boost::shared_ptr<TreeNode>> nodes;
     std::vector<std::string> types;
-    for (boost::shared_ptr<ObjectSet> set: pTrajectories.mObjectSets)
+    for (boost::shared_ptr<ISM::ObjectSet> set: pTrajectories.mObjectSets)
     {
         nodes.push_back(boost::shared_ptr<TreeNode>(new TreeNode(set)));
-        types.push_back(set->mObjects.at(0)->mType);
+        types.push_back(set->objects.at(0)->type);
     }
     if (!nodes.empty())
     {

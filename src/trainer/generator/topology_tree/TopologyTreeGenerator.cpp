@@ -34,10 +34,10 @@ void TopologyTreeGenerator::buildTree(ObjectSetList pTrajectories, boost::shared
     std::cout << "Creating tree from topology." << std::endl;
     // Create nodes for each type and map them to their type. bool indicates whether the node was already added to the tree.
     std::map<std::string, std::pair<boost::shared_ptr<TreeNode>, bool>> nodesByType;
-    for (boost::shared_ptr<ObjectSet> trajectory: pTrajectories.mObjectSets)
+    for (boost::shared_ptr<ISM::ObjectSet> trajectory: pTrajectories.mObjectSets)
     {
         boost::shared_ptr<TreeNode> newNode(new TreeNode(trajectory));
-        nodesByType[trajectory->mObjects[0]->mType] = std::pair<boost::shared_ptr<TreeNode>, bool>(newNode, false);
+        nodesByType[trajectory->objects[0]->type] = std::pair<boost::shared_ptr<TreeNode>, bool>(newNode, false);
     }
     std::vector<std::string> typesToVisit;
     typesToVisit.push_back(pType);

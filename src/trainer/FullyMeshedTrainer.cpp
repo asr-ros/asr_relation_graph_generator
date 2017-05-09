@@ -40,10 +40,15 @@ namespace SceneModel {
   {
   }
 
-  void FullyMeshedTrainer::addSceneGraphMessages(std::vector<boost::shared_ptr<const asr_msgs::AsrSceneGraph> > pMessages)
+  /**void FullyMeshedTrainer::addSceneGraphMessages(std::vector<boost::shared_ptr<const asr_msgs::AsrSceneGraph> > pMessages)
   {
     BOOST_FOREACH(boost::shared_ptr<const asr_msgs::AsrSceneGraph> pMessage, pMessages)
       pbdSource->addSceneGraphMessage(*pMessage);
+  }*/
+  void FullyMeshedTrainer::addSceneGraphMessages(std::vector<ISM::ObjectSetPtr> pMessages)
+  {
+    //BOOST_FOREACH(boost::shared_ptr<const ISM::ObjectSetPtr> pMessage, pMessages)
+      pbdSource->addSceneGraphMessage(pMessages);
   }
 
 }
