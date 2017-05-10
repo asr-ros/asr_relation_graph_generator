@@ -20,8 +20,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 // Package includes
 #include <boost/shared_ptr.hpp>
 
-#include <asr_msgs/AsrSceneGraph.h>
-
 // Local includes
 #include "trainer/TreeNode.h"
 #include "trainer/AbstractTrainer.h"
@@ -60,7 +58,7 @@ namespace SceneModel {
     ~PSMTrainer();
  
     /**
-     * Adds a AsrSceneGraph message for conversion into a trajectory.
+     * Adds a ISM::ObjectSet for conversion into a trajectory.
      * 
      * @param pMessage The messages to add to the source.
      */
@@ -69,7 +67,7 @@ namespace SceneModel {
   private:
     
     /**
-     * A source for collecting and converting AsrSceneGraph messages.
+     * A source for collecting and converting ISM::ObjectSets.
      */
     boost::shared_ptr<PbdSceneGraphSource> pbdSource;
   };

@@ -23,8 +23,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 // Package includes
 #include <boost/shared_ptr.hpp>
 
-#include <asr_msgs/AsrSceneGraph.h>
-
 // Local includes
 #include "trainer/source/ObjectSetList.h"
 #include "trainer/source/AbstractSource.h"
@@ -55,9 +53,9 @@ namespace SceneModel {
     ~PbdSceneGraphSource();
     
     /**
-     * Adds a AsrSceneGraph message for conversion into a trajectory.
+     * Adds a ISM::ObjectSet for conversion into a trajectory.
      * 
-     * @param pMessage The message to add to the source.
+     * @param pMessage The ISM::ObjectSet to add to the source.
      */
     void addSceneGraphMessage(std::vector<ISM::ObjectSetPtr> pMessage);
     
