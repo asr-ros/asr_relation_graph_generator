@@ -19,8 +19,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #include <iostream>
 #include <stdio.h>
 
-#include <asr_msgs/AsrSceneGraph.h>
-
 // Local includes
 #include "trainer/PSMTrainer.h"
 

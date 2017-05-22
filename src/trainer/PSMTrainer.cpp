@@ -22,7 +22,7 @@ namespace SceneModel {
   PSMTrainer::PSMTrainer(const double pStaticBreakRatio, const double pTogetherRatio, const double pMaxAngleDeviation)
   : AbstractTrainer()
   {
-    // Initilaize a source that translates AsrSceneGraph messages.
+    // Initilaize a source that translates ISM::ObjectSets.
     pbdSource = boost::shared_ptr<PbdSceneGraphSource>(new PbdSceneGraphSource());
     source = pbdSource;
     
