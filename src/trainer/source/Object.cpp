@@ -20,19 +20,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 namespace SceneModel
 {
  
-  Object::Object(asr_msgs::AsrObservations pObject)
-  {
-    mType = pObject.type;
-    
-    mPosition.reset(new Eigen::Vector3d(pObject.transform.position.x,
-					pObject.transform.position.y,
-					pObject.transform.position.z));
-    
-    mOrientation.reset(new Eigen::Quaternion<double>(pObject.transform.orientation.w,
-						      pObject.transform.orientation.x,
-						      pObject.transform.orientation.y,
-						      pObject.transform.orientation.z));
-  }
+
   
   Object::~Object()
   {

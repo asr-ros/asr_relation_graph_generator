@@ -24,7 +24,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #include <boost/shared_ptr.hpp>
 
 // Package includes
-#include <asr_msgs/AsrObservations.h>
 
 namespace SceneModel
 {
@@ -38,13 +37,7 @@ namespace SceneModel
   class Object  {
   public:
 
-    /**
-     * Constructor.
-     * 
-     * @param pObject The AsrObject that should be converted into this object.
-     */
-    Object(asr_msgs::AsrObservations pObject);
-    
+
     /**
      * Destructor.
      */
