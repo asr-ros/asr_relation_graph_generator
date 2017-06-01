@@ -17,59 +17,50 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 #pragma once
 
-#include "topology_creator/Relation.h"
-#include "trainer/TreeNode.h"
-#include "trainer/generator/AbstractGraphGenerator.h"
-#include "trainer/source/ObjectSetList.h"
+#include "topology_creator/Topology.h"
 
 namespace SceneModel {
 
 /**
- * Generates a tree with references representing an object relation graph topology.
+ * Abstract Interface to TopologyCreator, which generates different topologies of object graphs.
  */
-class TopologyTreeGenerator: public AbstractGraphGenerator
+class AbstractTopologyCreator
 {
-
 public:
-    /**
-     * Constructor.
-     */
-    TopologyTreeGenerator();
 
     /**
-     * Destructor.
+     * Generates a set of neighbouring topologies from the given one using up to three operations depending on the parameters passed in constructor.
+     * Operations are adding, removing and swapping relations.
+     * @param pFrom the topology to generate the neighbours for.
+     * @return  the set of neighbours of this topology.
      */
-    ~TopologyTreeGenerator();
+    virtual std::vector<boost::shared_ptr<Topology>> generateNeighbours(boost::shared_ptr<Topology> pFrom) = 0;
 
     /**
-     * Builds the tree.
-     *
-     * @param pObjectSets The list of trajectories to build the tree from.
-     * @param pRoot The root node of the tree.
+     * Generates all possible star topologies containing all the object types passed in constructor.
+     * A star topology is one where all objects are connected only to a sigle reference object.
+     * @return the set of all possible star topologies for the given object types.
      */
-    void buildTree(ObjectSetList pObjectSets, boost::shared_ptr<TreeNode>& pRoot);
+    virtual std::vector<boost::shared_ptr<Topology>> generateStarTopologies() = 0;
 
     /**
-     * Builds the tree, forces the object with the given type as root node and appends a new node to what ever node it is appropriate
-     *
-     * @param pTrajectories The list of trajectories to build the tree from.
-     * @param pRoot The root node of the tree.
-     * @param pType Type of the object that should be forced as root node.
+     * Generates the fully meshed topolgy containing all the object types from constructor.
+     * @return the fully meshed topology.
      */
-    void buildTree(ObjectSetList pTrajectories, boost::shared_ptr<TreeNode>& pRoot, std::string pType);
+    virtual boost::shared_ptr<Topology> generateFullyMeshedTopology() = 0;
 
     /**
-     * Set the relations representing the topology to generate the tree from.
-     * @param pRelations the relations representing the topology to generate the tree from.
+     * Generates a random topology containing the object types.
+     * @return a random topology.
      */
-    void setRelations(std::vector<boost::shared_ptr<Relation>> pRelations);
+    virtual boost::shared_ptr<Topology> generateRandomTopology() = 0;
 
-private:
     /**
-     * The relations representing the topology to generate the tree from.
+     * Generates all connected topologies containing the object types from constructor.
+     * @return all connected topologies.
      */
-    std::vector<boost::shared_ptr<Relation>> mRelations;
+    virtual std::vector<boost::shared_ptr<Topology>> generateAllConnectedTopologies() = 0;
 
 };
-
 }
+

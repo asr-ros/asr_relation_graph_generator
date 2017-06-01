@@ -1,6 +1,6 @@
 /**
 
-Copyright (c) 2017, Gaßner Nikolai, Meißner Pascal
+Copyright (c) 2016, Meißner Pascal
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,45 +17,51 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 #pragma once
 
+// Global includes
+#include <vector>
+#include <ros/ros.h>
 // Package includes
 #include <boost/shared_ptr.hpp>
 
 // Local includes
-#include "trainer/TreeNode.h"
-#include "trainer/AbstractTrainer.h"
+#include "trainer/source/ObjectSetList.h"
+#include "trainer/source/AbstractSource.h"
 
-//#include "trainer/source/AbstractSource.h"
-//#include "trainer/generator/AbstractGraphGenerator.h"
+
+#include <ISM/common_type/ObjectSet.hpp>
+
 
 namespace SceneModel {
-
-/**
- * Returns a tree set in construction.
- * Used to suit an older interface.
- */
-class FixedTreeTrainer: public AbstractTrainer
-{
-public:
-
-
+  
   /**
-   * Constructor.
-   * @param pTree   The fixed tree to be returned by the trainer
+   * Loads the trajectories (the examplesList) given to it verbatim.
+   *
+   * @author Joachim Gehrung
+   * @version See SVN
    */
-  FixedTreeTrainer(boost::shared_ptr<TreeNode> pTree)
-  {
-      root = pTree;
-      source.reset(new AbstractSource());
-      generator.reset(new AbstractGraphGenerator());
-  }
+  class ExamplesListSource : public AbstractSource  {
+  public:
 
-  /**
-   * Destructor.
-   */
-  ~FixedTreeTrainer() { };
-
-
-
-};
-
+    /**
+     * Constructor.
+     */
+    ExamplesListSource() { }
+    
+    /**
+     * Destructor.
+     */
+    ~ExamplesListSource() { }
+    
+    /**
+     * Adds a ISM::ObjectSet as a trajectory.
+     * 
+     * @param pMessage The ISM::ObjectSets to add to the source.
+     */
+    void addSceneGraphMessage(std::vector<ISM::ObjectSetPtr> pMessage)
+    {
+        for (ISM::ObjectSetPtr objectSet: pMessage)
+            mObjectSetList.mObjectSets.push_back(objectSet);
+    }
+    
+  };
 }

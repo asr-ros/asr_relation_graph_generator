@@ -19,7 +19,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 #include <boost/shared_ptr.hpp>
 
-#include "topology_generator/Relation.h"
+#include "topology_creator/Relation.h"
 #include "trainer/TreeNode.h"
 
 namespace SceneModel

@@ -15,17 +15,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 */
 
-#include "topology_generator/TopologyGenerator.h"
+#include "topology_creator/TopologyCreator.h"
 
 namespace SceneModel {
 
-TopologyGenerator::TopologyGenerator(const std::vector<std::string>& pAllObjectTypes, unsigned int pMaxNeighbourCount, bool pRemoveRelations, bool pSwapRelations):
+TopologyCreator::TopologyCreator(const std::vector<std::string>& pAllObjectTypes, unsigned int pMaxNeighbourCount, bool pRemoveRelations, bool pSwapRelations):
     mAllObjectTypes(pAllObjectTypes), mMaxNeighbourCount(pMaxNeighbourCount), mRemoveRelations(pRemoveRelations), mSwapRelations(pSwapRelations)
 {
     mConnectivityChecker = boost::shared_ptr<ConnectivityChecker>(new ConnectivityChecker(pAllObjectTypes.size()));
 }
 
-std::vector<boost::shared_ptr<Topology>> TopologyGenerator::generateNeighbours(boost::shared_ptr<Topology> pFrom)
+std::vector<boost::shared_ptr<Topology>> TopologyCreator::generateNeighbours(boost::shared_ptr<Topology> pFrom)
 {
     std::cout << "-----------------------------------------------------------" << std::endl;
     std::cout << "Generating neighbours (c indicates connectedness):" << std::endl;
@@ -56,7 +56,7 @@ std::vector<boost::shared_ptr<Topology>> TopologyGenerator::generateNeighbours(b
         std::cout << "Found " << selectedNeighbours.size() << " neighbours, maximum is " << mMaxNeighbourCount << ". Selecting random neighbours." << std::endl;
         selectedNeighbours = selectRandomNeighbours(selectedNeighbours);
         if (selectedNeighbours.size() != mMaxNeighbourCount)
-            throw std::runtime_error("In TopologyGenerator: number of randomly selected neighbours (" + boost::lexical_cast<std::string>(selectedNeighbours.size()) + ") was not equal to maximum.");
+            throw std::runtime_error("In TopologyCreator: number of randomly selected neighbours (" + boost::lexical_cast<std::string>(selectedNeighbours.size()) + ") was not equal to maximum.");
     }
     std::vector<boost::shared_ptr<Topology>> result;
     std::cout << "Selected neighbours: ";
@@ -76,7 +76,7 @@ std::vector<boost::shared_ptr<Topology>> TopologyGenerator::generateNeighbours(b
     return result;
 }
 
-std::vector<boost::shared_ptr<Topology>> TopologyGenerator::generateStarTopologies()
+std::vector<boost::shared_ptr<Topology>> TopologyCreator::generateStarTopologies()
 {
     std::vector<boost::shared_ptr<Topology>> result;
     // from lib_ism:
@@ -104,7 +104,7 @@ std::vector<boost::shared_ptr<Topology>> TopologyGenerator::generateStarTopologi
 }
 
 
-boost::shared_ptr<Topology> TopologyGenerator::generateFullyMeshedTopology()
+boost::shared_ptr<Topology> TopologyCreator::generateFullyMeshedTopology()
 {
     unsigned int numObjects = mAllObjectTypes.size();
     std::vector<bool> bitvector((numObjects - 1) * numObjects / 2, true);   // contains all possible relations.
@@ -112,7 +112,7 @@ boost::shared_ptr<Topology> TopologyGenerator::generateFullyMeshedTopology()
     return result;
 }
 
-boost::shared_ptr<Topology> TopologyGenerator::generateRandomTopology()
+boost::shared_ptr<Topology> TopologyCreator::generateRandomTopology()
 {
     unsigned int numAllObjects = mAllObjectTypes.size();
     unsigned int numAllRelations =  (numAllObjects - 1) * numAllObjects / 2;
@@ -131,7 +131,7 @@ boost::shared_ptr<Topology> TopologyGenerator::generateRandomTopology()
     return result;
 }
 
-std::vector<boost::shared_ptr<Topology>> TopologyGenerator::generateAllConnectedTopologies()
+std::vector<boost::shared_ptr<Topology>> TopologyCreator::generateAllConnectedTopologies()
 {
     std::vector<boost::shared_ptr<Topology>> result;
     boost::shared_ptr<SceneModel::Topology> fullyMeshed = generateFullyMeshedTopology();
@@ -173,7 +173,7 @@ std::vector<boost::shared_ptr<Topology>> TopologyGenerator::generateAllConnected
     return result;
 }
 
-std::vector<std::vector<bool>> TopologyGenerator::selectRandomNeighbours(std::vector<std::vector<bool>>& pNeighbours)
+std::vector<std::vector<bool>> TopologyCreator::selectRandomNeighbours(std::vector<std::vector<bool>>& pNeighbours)
 {
     if (pNeighbours.size() <= mMaxNeighbourCount) return pNeighbours;   // if amount of neighbours is already smaller than maximum amount: return neighbours
     //from lib_ism: Sort from by #relations.
@@ -206,7 +206,7 @@ std::vector<std::vector<bool>> TopologyGenerator::selectRandomNeighbours(std::ve
     return selectedNeighbours;
 }
 
-boost::shared_ptr<Topology> TopologyGenerator::convertBitvectorToTopology(const std::vector<bool> & pBitvector)
+boost::shared_ptr<Topology> TopologyCreator::convertBitvectorToTopology(const std::vector<bool> & pBitvector)
 {
     unsigned int numObjectTypes = mAllObjectTypes.size();
     std::vector<boost::shared_ptr<Relation>> relations;
@@ -238,7 +238,7 @@ boost::shared_ptr<Topology> TopologyGenerator::convertBitvectorToTopology(const 
     return result;
 }
 
-std::vector<bool> TopologyGenerator::convertTopologyToBitvector(boost::shared_ptr<Topology> pTopology)
+std::vector<bool> TopologyCreator::convertTopologyToBitvector(boost::shared_ptr<Topology> pTopology)
 {
     unsigned int numObjectTypes = mAllObjectTypes.size();
     unsigned int numAllRelations = (numObjectTypes - 1) * numObjectTypes / 2;
@@ -262,9 +262,9 @@ std::vector<bool> TopologyGenerator::convertTopologyToBitvector(boost::shared_pt
     return result;
 }
 
-std::vector<std::vector<bool>> TopologyGenerator::calculateNeighbours(std::vector<bool> pFrom)
+std::vector<std::vector<bool>> TopologyCreator::calculateNeighbours(std::vector<bool> pFrom)
 {
-    // from TopologyGeneratorPaper in lib_ism:
+    // from TopologyCreatorPaper in lib_ism:
     std::vector<std::vector<bool>> neighbours;
     std::vector<unsigned int> ones;
     std::vector<unsigned int> zeros;

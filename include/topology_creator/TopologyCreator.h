@@ -21,17 +21,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #include <boost/lexical_cast.hpp>
 #include "map"
 
-#include "topology_generator/Relation.h"
-
-#include "topology_generator/ConnectivityChecker.h"
-#include "topology_generator/Topology.h"
+#include "topology_creator/Relation.h"
+#include "topology_creator/ConnectivityChecker.h"
+#include "topology_creator/Topology.h"
+#include "topology_creator/AbstractTopologyCreator.h"
 
 namespace SceneModel {
 
 /**
  * Generates different topologies of object graphs.
  */
-class TopologyGenerator
+class TopologyCreator: public AbstractTopologyCreator
 {
 public:
     /**
@@ -41,7 +41,7 @@ public:
      * @param pRemoveRelations      Whether to use the removal of relations as an operation when generating neighbours.
      * @param pSwapRelations        Whether to use the swapping of relations as an operation when generating neighbours.
      */
-    TopologyGenerator(const std::vector<std::string>& pAllObjectTypes, unsigned int pMaxNeighbourCount, bool pRemoveRelations, bool pSwapRelations);
+    TopologyCreator(const std::vector<std::string>& pAllObjectTypes, unsigned int pMaxNeighbourCount, bool pRemoveRelations, bool pSwapRelations);
 
     /**
      * Generates a set of neighbouring topologies from the given one using up to three operations depending on the parameters passed in constructor.

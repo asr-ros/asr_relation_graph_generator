@@ -15,7 +15,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 */
 
-#include "topology_generator/ConnectivityChecker.h"
+#include "topology_creator/ConnectivityChecker.h"
 
 namespace SceneModel {
 

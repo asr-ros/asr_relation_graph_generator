@@ -15,7 +15,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 */
 
-#include "topology_generator/Relation.h"
+#include "topology_creator/Relation.h"
 
 namespace SceneModel {
 

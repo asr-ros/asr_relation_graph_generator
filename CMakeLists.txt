@@ -37,10 +37,10 @@ add_library(asr_relation_graph_generator
 		      src/helper/MathHelper.cpp
 		      src/trainer/FullyMeshedTrainer.cpp src/trainer/generator/fully_meshed/FullyMeshedGenerator.cpp
 		      src/trainer/TopologyTreeTrainer.cpp src/trainer/generator/topology_tree/TopologyTreeGenerator.cpp
-		      src/topology_generator/Relation.cpp
+		      src/topology_creator/Relation.cpp
 		      
-		      src/topology_generator/ConnectivityChecker.cpp 
-		      src/topology_generator/TopologyGenerator.cpp 
+		      src/topology_creator/ConnectivityChecker.cpp 
+		      src/topology_creator/TopologyCreator.cpp 
 )
 
 # dependcy to the message generation of asr_msgs to ensure 
