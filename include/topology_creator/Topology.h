@@ -35,13 +35,12 @@ public:
     /**
      * Constructor.
      */
-    Topology(): mEvaluated(false), mCostValid(false), mUsedInOptimization(false)
-    { }
+    Topology();
 
     /**
      * Destructor.
      */
-    ~Topology() { }
+    ~Topology();
 
     /**
      * The relations of which this topology is made of.
@@ -53,6 +52,80 @@ public:
      */
     std::string mIdentifier;
 
+    /**
+     * Whether this topology has already been visited during optimization.
+     */
+    bool mUsedInOptimization;
+
+    /**
+     * Set the evaluation result of this topology.
+     * @param pAverageRecognitionRuntime    The average recognition runtime of test sets during evaluation.
+     * @param pFalsePositives               The number of false positives encountered during evaluation
+     * @param pFalseNegatives               The number of false negatives encountered during evaluation.
+     */
+    void setEvaluationResult(double pAverageRecognitionRuntime, double pFalsePositives, double pFalseNegatives);
+
+    /**
+     * Get the average recognition runtime of test sets during evaluation.
+     * @return The average recognition runtime of test sets during evaluation.
+     */
+    double getAverageRecognitionRuntime() const;
+
+    /**
+     * Get the number of false positives encountered during evaluation.
+     * @return The number of false positives encountered during evaluation.
+     */
+    double getFalsePositives() const;
+
+    /**
+     * Get the number of false negatives encountered during evaluation.
+     * @return The number of false negatives encountered during evaluation.
+     */
+    double getFalseNegatives() const;
+
+    /**
+     * Returns whether the topology has been evaluated.
+     * @return whether the topology has been evaluated.
+     */
+    bool isEvaluated() const;
+
+    /**
+     * Set the cost calculated for the tree generated from the relations of this topology.
+     * @param pCost the cost calculated for the tree generated from the relations of this topology.
+     */
+    void setCost(double pCost);
+
+    /**
+     * Get the cost calculated for the tree generated from the relations of this topology.
+     * @return the cost calculated for the tree generated from the relations of this topology.
+     */
+    double getCost() const;
+
+    /**
+     * Returns whether the cost is valid.
+     * @return whether the cost is valid.
+     */
+    bool isCostValid() const;
+
+    /**
+     * Set the tree that was generated for the relations of this topology.
+     * @param pTree the tree that was generated for the relations of this topology.
+     */
+    void setTree(boost::shared_ptr<TreeNode> pTree);
+
+    /**
+     * Get the tree that was generated for the relations of this topology.
+     * @return the tree that was generated for the relations of this topology.
+     */
+    boost::shared_ptr<TreeNode> getTree();
+
+    /**
+     * Returns whether the tree is valid.
+     * @return whether the tree is valid.
+     */
+    bool isTreeValid() const;
+
+private:
     /**
      * Whether the result of the evaluation of this topology is valid.
      */
@@ -79,7 +152,7 @@ public:
     bool mCostValid;
 
     /**
-     * The cost calculated for the tree generated from the relations of this topolog.y
+     * The cost calculated for the tree generated from the relations of this topology.
      */
     double mCost;
 
@@ -88,11 +161,6 @@ public:
      * Check for nullpointer when checking validity.
      */
     boost::shared_ptr<TreeNode> mTree;
-
-    /**
-     * Whether this topology has already been visited during optimization.
-     */
-    bool mUsedInOptimization;
 
 };
 

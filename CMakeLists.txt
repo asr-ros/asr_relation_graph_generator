@@ -40,7 +40,8 @@ add_library(asr_relation_graph_generator
 		      src/topology_creator/Relation.cpp
 		      
 		      src/topology_creator/ConnectivityChecker.cpp 
-		      src/topology_creator/TopologyCreator.cpp 
+		      src/topology_creator/TopologyCreator.cpp
+		      src/topology_creator/Topology.cpp
 )
 
 # dependcy to the message generation of asr_msgs to ensure 

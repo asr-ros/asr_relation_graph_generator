@@ -25,6 +25,9 @@ TopologyCreator::TopologyCreator(const std::vector<std::string>& pAllObjectTypes
     mConnectivityChecker = boost::shared_ptr<ConnectivityChecker>(new ConnectivityChecker(pAllObjectTypes.size()));
 }
 
+TopologyCreator::~TopologyCreator()
+{ }
+
 std::vector<boost::shared_ptr<Topology>> TopologyCreator::generateNeighbours(boost::shared_ptr<Topology> pFrom)
 {
     std::cout << "-----------------------------------------------------------" << std::endl;

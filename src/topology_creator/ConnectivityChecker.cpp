@@ -22,6 +22,9 @@ namespace SceneModel {
     ConnectivityChecker::ConnectivityChecker(unsigned int pNumObjects): mNumObjects(pNumObjects)
     {}
 
+    ConnectivityChecker::~ConnectivityChecker()
+    { }
+
     bool ConnectivityChecker::isConnected(std::vector<bool> pBitvector)
     {
         if (pBitvector.size() != (mNumObjects - 1) * mNumObjects / 2)

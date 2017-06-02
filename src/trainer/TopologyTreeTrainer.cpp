@@ -40,14 +40,8 @@ namespace SceneModel {
   {
   }
 
-  /*void TopologyTreeTrainer::addSceneGraphMessages(std::vector<boost::shared_ptr<const asr_msgs::AsrSceneGraph> > pMessages)
-  {
-      for(boost::shared_ptr<const asr_msgs::AsrSceneGraph> pMessage: pMessages)
-          pbdSource->addSceneGraphMessage(*pMessage);
-  }*/
   void TopologyTreeTrainer::addSceneGraphMessages(std::vector<ISM::ObjectSetPtr> pMessages)
   {
-    //BOOST_FOREACH(boost::shared_ptr<const ISM::ObjectSetPtr> pMessage, pMessages)
       pbdSource->addSceneGraphMessage(pMessages);
   }
 

@@ -35,6 +35,11 @@ public:
     ConnectivityChecker(unsigned int pNumObjects);
 
     /**
+     * Destructor.
+     */
+    ~ConnectivityChecker();
+
+    /**
      * Checks whether a topology represented by a bitvector is connected.
      * @param pBitvector    a bitvector representing the relations in the topology. true indicates the relation exists.
      * @return  whether the topology represented by the bitvector is connected.

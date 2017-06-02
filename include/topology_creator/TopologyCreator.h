@@ -44,6 +44,11 @@ public:
     TopologyCreator(const std::vector<std::string>& pAllObjectTypes, unsigned int pMaxNeighbourCount, bool pRemoveRelations, bool pSwapRelations);
 
     /**
+     * Destructor.
+     */
+    ~TopologyCreator();
+
+    /**
      * Generates a set of neighbouring topologies from the given one using up to three operations depending on the parameters passed in constructor.
      * Operations are adding, removing and swapping relations.
      * @param pFrom the topology to generate the neighbours for.
