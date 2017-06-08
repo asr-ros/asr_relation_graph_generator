@@ -31,13 +31,12 @@ TopologyCreator::~TopologyCreator()
 std::vector<boost::shared_ptr<Topology>> TopologyCreator::generateNeighbours(boost::shared_ptr<Topology> pFrom)
 {
     std::cout << "-----------------------------------------------------------" << std::endl;
-    std::cout << "Generating neighbours (c indicates connectedness):" << std::endl;
+    std::cout << "Generating neighbours (c indicates connectedness): ";
 
     std::vector<bool> bitvector = convertTopologyToBitvector(pFrom);
     std::vector<std::vector<bool>> neighbours = calculateNeighbours(bitvector);
     std::vector<std::vector<bool>> selectedNeighbours;
 
-    std::cout << std::endl;
     for (std::vector<bool> i: neighbours)
     {
         for (bool bit: i)

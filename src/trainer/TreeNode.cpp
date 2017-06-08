@@ -138,8 +138,6 @@ namespace SceneModel {
   
   void TreeNode::reassignNewParentNode(boost::shared_ptr<TreeNode> pParent)
   {
-    std::cout << mObjectSet->objects[0]->type << std::endl;
-    
     if(mParent)
       mParent->reassignNewParentNode(f());
     
