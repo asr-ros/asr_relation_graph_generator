@@ -20,8 +20,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 // Package includes
 #include <boost/shared_ptr.hpp>
 
-#include <asr_msgs/AsrSceneGraph.h>
-
 // Local includes
 #include "trainer/TreeNode.h"
 #include "trainer/AbstractTrainer.h"
