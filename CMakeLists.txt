@@ -9,7 +9,7 @@ endif(COMMAND cmake_policy)
 find_package(cmake_modules)
 
 # include Eigen library
-find_package(Eigen REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -21,13 +21,13 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES asr_relation_graph_generator
   CATKIN_DEPENDS roscpp asr_msgs
-  DEPENDS Eigen
+  DEPENDS EIGEN3
 )
 
 
 include_directories(
   include
-  ${Eigen_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -46,7 +46,7 @@ add_library(asr_relation_graph_generator
 add_dependencies(${PROJECT_NAME} asr_msgs_generate_messages_cpp)
 
 target_link_libraries(asr_relation_graph_generator
-  ${Eigen_LIBRARIES}
+  ${EIGEN3_LIBRARIES}
   ${catkin_LIBRARIES}
 )
 
@@ -59,6 +59,6 @@ add_dependencies(Tester asr_msgs_generate_messages_cpp)
 
 target_link_libraries(Tester 
   ${catkin_LIBRARIES}
-  ${Eigen_LIBRARIES}
+  ${EIGEN3_LIBRARIES}
   asr_relation_graph_generator
 )
