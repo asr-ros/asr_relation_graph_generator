@@ -29,6 +29,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 #include "trainer/generator/AbstractGraphGenerator.h"
 
+#include "topology_creator/TopologyCreator.h"
+#include "trainer/TopologyTreeTrainer.h"
+
 namespace SceneModel {
 
 /**
