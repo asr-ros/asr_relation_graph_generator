@@ -1,6 +1,6 @@
 /**
 
-Copyright (c) 2016, Meißner Pascal
+Copyright (c) 2016, Gaßner Nikolai, Meißner Pascal
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -109,6 +109,11 @@ namespace SceneModel {
      * @param space The number of leading spaces.
      */
     void printTreeToConsole(unsigned int space);
+
+    /**
+     * Assigns unique IDs to all nodes so references can later be expressed through IDs only.
+     */
+    void setIDs();
     
   public:
     
@@ -127,6 +132,21 @@ namespace SceneModel {
      * A list of all child nodes.
      */
     std::vector<boost::shared_ptr<TreeNode> > mChildren;
+
+    /**
+     * Whether this node is a reference to another.
+     */
+    bool mIsReference = false;
+
+    /**
+     * If this node is a reference, this is the node it points to.
+     */
+    boost::shared_ptr<TreeNode> mReferenceTo;
+
+    /**
+     * A unique ID of this node.
+     */
+    unsigned int mID;
     
   private:
     /**
@@ -135,5 +155,22 @@ namespace SceneModel {
      * @param pParent the new parent node.
      */
     void reassignNewParentNode(boost::shared_ptr<TreeNode> pParent);
+
+    /**
+     * Recursively updates the IDs of the nodes through DFS. Used in setIDs().
+     *
+     * @param pID    If conditions are met, pID+1 is assigned as the node's ID.
+     * @param pUpdateReferenceIDs     Whether to update only the non-reference or only the reference node IDs.
+     */
+    void updateIDs(unsigned int& pID, bool pUpdateReferencIDs);
+
+    /**
+     * Recursively checks all references in the tree. If they point into pRoot, they are flipped to point out of it instead to avoid circles.
+     *
+     * @param pRoot     A root which should only have references pointing out from it.
+     * @return  a list of all flipped references
+     */
+    std::vector<boost::shared_ptr<TreeNode>> updateReferences(boost::shared_ptr<TreeNode> pRoot);
+
   };
 }

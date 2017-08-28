@@ -1,6 +1,6 @@
 /**
 
-Copyright (c) 2016, Meißner Pascal
+Copyright (c) 2016, Gaßner Nikolai, Meißner Pascal
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -47,32 +47,41 @@ namespace SceneModel {
 
     while(nodesToVisit.size() > 0)
     {
+        boost::shared_ptr<TreeNode> node = nodesToVisit.front();
+        nodesToVisit.pop();
 
-      boost::shared_ptr<TreeNode> node = nodesToVisit.front();
-      nodesToVisit.pop();
-      
-      // New root node found?
-      if(node->mObjectSet->objects[0]->type.compare(pType) == 0)
-      {
-	newRoot = node;
-	break;
-      }
-      
-      // Add the child nodes to queue.
-      BOOST_FOREACH(boost::shared_ptr<TreeNode> child, node->mChildren)
-	nodesToVisit.push(child);
-	
-      // Add parent node to queue, if it exists.
-      if(node->mParent)
-	nodesToVisit.push(node->mParent);
+        if (!(node->mIsReference))  // A reference node can not be root, has no children, and its parent node must appear as parent node of a non-reference node elsewhere.
+        {
+
+            // New root node found?
+            if(node->mObjectSet->objects[0]->type.compare(pType) == 0)
+            {
+                newRoot = node;
+                break;
+            }
+
+            // Add the child nodes to queue.
+            BOOST_FOREACH(boost::shared_ptr<TreeNode> child, node->mChildren)
+                    nodesToVisit.push(child);
+
+            // Add parent node to queue, if it exists.
+            if(node->mParent)
+                nodesToVisit.push(node->mParent);
+        }
     }
-    
+
     // Reorganize the tree from the root node.
     if(newRoot->mParent)
     {
       newRoot->mParent->reassignNewParentNode(newRoot);
       newRoot->mParent = boost::shared_ptr<TreeNode>();
     }
+
+    std::vector<boost::shared_ptr<TreeNode>> reversedReferences = newRoot->updateReferences(newRoot);
+    for (boost::shared_ptr<TreeNode> reversedReference: reversedReferences) newRoot->addChild(reversedReference);
+
+    // Assign unique IDs to each node, counted in order of depth-first search.
+    newRoot->setIDs();
     
     // Return the new root node.
     return newRoot;
@@ -116,21 +125,19 @@ namespace SceneModel {
       std::cout << " ";
     std::cout << "-";
     
-    // Print types and number of children and observations.
-    std::cout << mObjectSet->objects[pSpace]->type << "(" << mChildren.size() << "/" << mObjectSet->objects.size() << ")" << std::endl;
+    // Print types and number of children and observations, as well as ID and ID of referenced (own if not reference): ID mID -> referencedID
+    unsigned int referencing = mID;
+    if (mIsReference) referencing = mReferenceTo->mID;
+    std::cout << mObjectSet->objects[0]->type << "(" << mChildren.size() << "/" << mObjectSet->objects.size() << ")" << " ID " << mID << " -> " << referencing << std::endl;
     
     // Print children.
-    BOOST_FOREACH(boost::shared_ptr<SceneModel::TreeNode> node, mChildren)
-    {
-      //std::cout << mChildren.size() << std::endl;
-      node->printTreeToConsole(pSpace + 1);
-    }
+    if (!mIsReference)  // References have no children
+        for (boost::shared_ptr<SceneModel::TreeNode> node: mChildren)
+            node->printTreeToConsole(pSpace + 1);
   }
   
   void TreeNode::reassignNewParentNode(boost::shared_ptr<TreeNode> pParent)
   {
-    std::cout << mObjectSet->objects[0]->type << std::endl;
-    
     if(mParent)
       mParent->reassignNewParentNode(f());
     
@@ -147,5 +154,69 @@ namespace SceneModel {
 	break;
       }
     }
+
+    // to avoid circles:
+    std::vector<boost::shared_ptr<TreeNode>> reversedReferences = updateReferences(f());
+    for (boost::shared_ptr<TreeNode> reversedReference: reversedReferences) addChild(reversedReference);
   }
+
+  void TreeNode::setIDs()
+  {
+      unsigned int id = 0;
+      this->mID = id;
+      for (boost::shared_ptr<TreeNode> child: mChildren) child->updateIDs(id, false);
+      for (boost::shared_ptr<TreeNode> child: mChildren) child->updateIDs(id, true);
+  }
+
+  void TreeNode::updateIDs(unsigned int& pID, bool pUpdateReferenceIDs)
+  {
+      if (!mIsReference ^ pUpdateReferenceIDs)
+      {
+          pID++;
+          this->mID = pID;
+      }
+      if (!mIsReference) // References dont't have children
+          for (boost::shared_ptr<TreeNode> child: mChildren) child->updateIDs(pID, pUpdateReferenceIDs);
+  }
+
+std::vector<boost::shared_ptr<TreeNode>> TreeNode::updateReferences(boost::shared_ptr<TreeNode> pRoot)
+{
+    std::vector<boost::shared_ptr<TreeNode>> reversedReferences;
+    std::vector<boost::shared_ptr<TreeNode>> toDelete;
+    if (mIsReference) return std::vector<boost::shared_ptr<TreeNode>>();    // references have no children, so there is nothing to reverse
+    for (boost::shared_ptr<TreeNode> child: this->mChildren)
+    {
+        if (child->mIsReference)
+        {
+            if (child->mReferenceTo == pRoot)
+            {
+                boost::shared_ptr<TreeNode> reversedReference(new TreeNode(this->mObjectSet));
+                reversedReference->mReferenceTo = boost::shared_ptr<TreeNode>(f());
+                reversedReference->mIsReference = true;
+                // references have no mChildren:
+                reversedReference->mChildren = std::vector<boost::shared_ptr<TreeNode>>();
+                reversedReferences.push_back(reversedReference);
+                toDelete.push_back(child);
+            }
+        }
+        else    // references don't have children, so it is unneccessary to do this on a reference
+        {
+            std::vector<boost::shared_ptr<TreeNode>> childReversedReferences = child->updateReferences(pRoot);
+            for (boost::shared_ptr<TreeNode> childReversedReference: childReversedReferences) reversedReferences.push_back(childReversedReference);
+        }
+    }
+    for (boost::shared_ptr<TreeNode> childToDelete: toDelete)
+    {
+        for(unsigned int i = 0; i < mChildren.size(); i++)
+        {
+            if(mChildren[i] == childToDelete)
+            {
+                mChildren.erase(mChildren.begin() + i);
+                break;
+            }
+        }
+    }
+    return reversedReferences;
+}
+
 }
