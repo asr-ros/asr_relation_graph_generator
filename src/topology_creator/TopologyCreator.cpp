@@ -17,6 +17,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 #include "topology_creator/TopologyCreator.h"
 
+#include <random>
+
 namespace SceneModel {
 
 TopologyCreator::TopologyCreator(const std::vector<std::string>& pAllObjectTypes, unsigned int pMaxNeighbourCount, bool pRemoveRelations, bool pSwapRelations):

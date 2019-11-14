@@ -19,6 +19,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 #include <boost/shared_ptr.hpp>
 #include <iostream>
+#include <vector>
 
 namespace SceneModel {
 
